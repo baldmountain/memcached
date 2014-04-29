@@ -127,7 +127,7 @@ sub free_port {
     my $sock;
     my $port;
     while (!$sock) {
-        $port = int(rand(20000)) + 30000;
+        $port = 8080; # int(rand(20000)) + 30000;
         $sock = IO::Socket::INET->new(LocalAddr => '127.0.0.1',
                                       LocalPort => $port,
                                       Proto     => $type,
