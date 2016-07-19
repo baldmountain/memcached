@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3603;
+use Test::More tests => 4942;
 use FindBin qw($Bin);
 use lib "$Bin/lib";
 use MemcachedTest;
@@ -61,7 +61,6 @@ my $mc = MC::Client->new;
 # Let's turn on detail stats for all this stuff
 
 $mc->stats('detail on');
-
 my $check = sub {
     my ($key, $orig_flags, $orig_val) = @_;
     my ($flags, $val, $cas) = $mc->get($key);
@@ -120,6 +119,23 @@ $set->('y', 5, 17, "somevaluey");
 $mc->flush;
 $empty->('x');
 $empty->('y');
+
+{
+    # diag "Some chunked item tests";
+    my $s2 = new_memcached('-o slab_chunk_max=4096');
+    ok($s2, "started the server");
+    my $m2 = MC::Client->new($s2);
+    # Specifically trying to cross the chunk boundary when internally
+    # appending CLRF.
+    for my $k (7900..8100) {
+        my $val = 'd' x $k;
+        $val .= '123';
+        $m2->set('t', $val, 0, 0);
+        # Ensure we get back the same value. Bugs can chop chars.
+        my (undef, $gval, undef) = $m2->get('t');
+        ok($gval eq $val, $gval . " = " . $val);
+    }
+}
 
 {
     # diag "Add";
@@ -612,7 +628,6 @@ sub _handle_single_response {
         my $found = length($rv);
         die("Expected $remaining bytes, got $found");
     }
-
     if (defined $myopaque) {
         Test::More::is($opaque, $myopaque, "Expected opaque");
     } else {

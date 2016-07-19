@@ -1,11 +1,11 @@
 AC_PREREQ(2.52)
 m4_include([version.m4])
 m4_include([m4/c99-backport.m4])
-AC_INIT(memcached, VERSION_NUMBER, memcached@googlegroups.com)
-AC_CANONICAL_SYSTEM
-AC_CONFIG_SRCDIR(memcached.c)
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
-AM_CONFIG_HEADER(config.h)
+AC_INIT([memcached], [VERSION_NUMBER], [memcached@googlegroups.com])
+AC_CANONICAL_HOST
+AC_CONFIG_SRCDIR([memcached.c])
+AM_INIT_AUTOMAKE([foreign])
+AM_CONFIG_HEADER([config.h])
 
 AC_PROG_CC
 
@@ -534,6 +534,19 @@ AC_TRY_LINK([],[
   ],[have_gcc_atomics=yes
   AC_DEFINE(HAVE_GCC_ATOMICS, 1, [GCC Atomics available])])
 AC_MSG_RESULT($have_gcc_atomics)
+
+dnl Check for usage of 64bit atomics
+dnl 32bit systems shouldn't have these.
+have_gcc_64atomics=no
+AC_MSG_CHECKING(for GCC 64bit atomics)
+AC_TRY_LINK([],[
+  uint64_t a;
+  uint64_t b;
+  b = __sync_add_and_fetch(&a, 1);
+  b = __sync_sub_and_fetch(&a, 2);
+  ],[have_gcc_64atomics=yes
+  AC_DEFINE(HAVE_GCC_64ATOMICS, 1, [GCC 64bit Atomics available])])
+AC_MSG_RESULT($have_gcc_64atomics)
 
 dnl Check for the requirements for running memcached with less privileges
 dnl than the default privilege set. On Solaris we need setppriv and priv.h
