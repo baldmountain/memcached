@@ -1574,10 +1574,10 @@ static enum test_return test_binary_flush(void) {
                                   PROTOCOL_BINARY_CMD_FLUSH);
 }
 
-// static enum test_return test_binary_flushq(void) {
-//     return test_binary_flush_impl("test_binary_flushq",
-//                                   PROTOCOL_BINARY_CMD_FLUSHQ);
-// }
+static enum test_return test_binary_flushq(void) {
+    return test_binary_flush_impl("test_binary_flushq",
+                                  PROTOCOL_BINARY_CMD_FLUSHQ);
+}
 
 static enum test_return test_binary_concat_impl(const char *key, uint8_t cmd) {
     union {
