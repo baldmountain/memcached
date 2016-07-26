@@ -450,8 +450,8 @@ static int connect_server(const char *hostname, in_port_t port, bool nonblock)
        if ((sock = socket(ai->ai_family, ai->ai_socktype,
                           ai->ai_protocol)) != -1) {
           if (connect(sock, ai->ai_addr, ai->ai_addrlen) == -1) {
-             fprintf(stderr, "Failed to connect socket: %s\n",
-                     strerror(errno));
+             fprintf(stderr, "Failed to connect socket: %s %s %d\n",
+                     strerror(errno), hostname, port);
              close(sock);
              sock = -1;
           } else if (nonblock) {
@@ -714,6 +714,13 @@ static bool safe_recv(void *buf, size_t len) {
     off_t offset = 0;
     do {
         ssize_t nr = read(sock, ((char*)buf) + offset, len - offset);
+        // printf("len: %lu offset: %lld nr: %zd\n", len, offset, nr);
+        // printf("<<");
+        // for(int idx = 0; idx<len; idx++) {
+        //     printf("%hhu, ", *(((char*)buf) + idx));
+
+        // }
+        // printf(">>\n");
         if (nr == -1) {
             if (errno != EINTR) {
                 fprintf(stderr, "Failed to read: %s\n", strerror(errno));
@@ -928,6 +935,7 @@ static off_t arithmetic_command(char* buf,
 static void validate_response_header(protocol_binary_response_no_extras *response,
                                      uint8_t cmd, uint16_t status)
 {
+    // printf("magic: %d %d %d %d %d\n", response->message.header.response.magic, PROTOCOL_BINARY_RES, response->message.header.response.opcode, response->message.header.response.datatype, response->message.header.response.status);
     assert(response->message.header.response.magic == PROTOCOL_BINARY_RES);
     assert(response->message.header.response.opcode == cmd);
     assert(response->message.header.response.datatype == PROTOCOL_BINARY_RAW_BYTES);
@@ -1519,7 +1527,6 @@ static enum test_return test_binary_flush_impl(const char *key, uint8_t cmd) {
         validate_response_header(&receive.response, cmd,
                                  PROTOCOL_BINARY_RESPONSE_SUCCESS);
     }
-
     len = raw_command(send.bytes, sizeof(send.bytes), PROTOCOL_BINARY_CMD_GET,
                       key, strlen(key), NULL, 0);
     safe_send(send.bytes, len, false);
@@ -1568,10 +1575,10 @@ static enum test_return test_binary_flush(void) {
                                   PROTOCOL_BINARY_CMD_FLUSH);
 }
 
-// static enum test_return test_binary_flushq(void) {
-//     return test_binary_flush_impl("test_binary_flushq",
-//                                   PROTOCOL_BINARY_CMD_FLUSHQ);
-// }
+static enum test_return test_binary_flushq(void) {
+    return test_binary_flush_impl("test_binary_flushq",
+                                  PROTOCOL_BINARY_CMD_FLUSHQ);
+}
 
 static enum test_return test_binary_concat_impl(const char *key, uint8_t cmd) {
     union {
@@ -1639,20 +1646,20 @@ static enum test_return test_binary_concat_impl(const char *key, uint8_t cmd) {
     return TEST_PASS;
 }
 
-// static enum test_return test_binary_append(void) {
-//     return test_binary_concat_impl("test_binary_append",
-//                                    PROTOCOL_BINARY_CMD_APPEND);
-// }
+static enum test_return test_binary_append(void) {
+    return test_binary_concat_impl("test_binary_append",
+                                   PROTOCOL_BINARY_CMD_APPEND);
+}
 
 static enum test_return test_binary_prepend(void) {
     return test_binary_concat_impl("test_binary_prepend",
                                    PROTOCOL_BINARY_CMD_PREPEND);
 }
 
-// static enum test_return test_binary_appendq(void) {
-//     return test_binary_concat_impl("test_binary_appendq",
-//                                    PROTOCOL_BINARY_CMD_APPENDQ);
-// }
+static enum test_return test_binary_appendq(void) {
+    return test_binary_concat_impl("test_binary_appendq",
+                                   PROTOCOL_BINARY_CMD_APPENDQ);
+}
 
 static enum test_return test_binary_prependq(void) {
     return test_binary_concat_impl("test_binary_prependq",
@@ -1981,9 +1988,9 @@ struct testcase testcases[] = {
     { "binary_decrq", test_binary_decrq },
     { "binary_version", test_binary_version },
     { "binary_flush", test_binary_flush },
-    // { "binary_flushq", test_binary_flushq },
-    // { "binary_append", test_binary_append },
-    // { "binary_appendq", test_binary_appendq },
+    { "binary_flushq", test_binary_flushq },
+    { "binary_append", test_binary_append },
+    { "binary_appendq", test_binary_appendq },
     { "binary_prepend", test_binary_prepend },
     { "binary_prependq", test_binary_prependq },
     { "binary_stat", test_binary_stat },
