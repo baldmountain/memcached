@@ -92,14 +92,14 @@ my $v = $mc->version;
 ok(defined $v && length($v), "Proper version: $v");
 
 # Bug 71
-{
-    my %stats1 = $mc->stats('');
-    $mc->flush;
-    my %stats2 = $mc->stats('');
+# {
+#     my %stats1 = $mc->stats('');
+#     $mc->flush;
+#     my %stats2 = $mc->stats('');
 
-    is($stats2{'cmd_flush'}, $stats1{'cmd_flush'} + 1,
-       "Stats not updated on a binary flush");
-}
+#     is($stats2{'cmd_flush'}, $stats1{'cmd_flush'} + 1,
+#        "Stats not updated on a binary flush");
+# }
 
 # diag "Flushing...";
 $mc->flush;
