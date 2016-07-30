@@ -581,54 +581,54 @@ static enum test_return test_issue_92(void) {
     return TEST_PASS;
 }
 
-// static enum test_return test_issue_102(void) {
-//     char buffer[4096];
-//     memset(buffer, ' ', sizeof(buffer));
-//     buffer[sizeof(buffer) - 1] = '\0';
+static enum test_return test_issue_102(void) {
+    char buffer[4096];
+    memset(buffer, ' ', sizeof(buffer));
+    buffer[sizeof(buffer) - 1] = '\0';
 
-//     close(sock);
-//     sock = connect_server("127.0.0.1", port, false);
+    close(sock);
+    sock = connect_server("127.0.0.1", port, false);
 
-//     send_ascii_command(buffer);
-//     /* verify that the server closed the connection */
-//     assert(read(sock, buffer, sizeof(buffer)) == 0);
-//     close(sock);
-//     sock = connect_server("127.0.0.1", port, false);
+    send_ascii_command(buffer);
+    /* verify that the server closed the connection */
+    assert(read(sock, buffer, sizeof(buffer)) == 0);
+    close(sock);
+    sock = connect_server("127.0.0.1", port, false);
 
-//     snprintf(buffer, sizeof(buffer), "gets ");
-//     size_t offset = 5;
-//     while (offset < 4000) {
-//         offset += snprintf(buffer + offset, sizeof(buffer) - offset,
-//                            "%010u ", (unsigned int)offset);
-//     }
+    snprintf(buffer, sizeof(buffer), "gets ");
+    size_t offset = 5;
+    while (offset < 4000) {
+        offset += snprintf(buffer + offset, sizeof(buffer) - offset,
+                           "%010u ", (unsigned int)offset);
+    }
 
-//     send_ascii_command(buffer);
-//     usleep(250);
+    send_ascii_command(buffer);
+    usleep(250);
 
-//     send_ascii_command("\r\n");
-//     char rsp[80];
-//     read_ascii_response(rsp, sizeof(rsp));
-//     assert(strncmp(rsp, "END", strlen("END")) == 0);
-//     buffer[3]= ' ';
-//     send_ascii_command(buffer);
-//     usleep(250);
-//     send_ascii_command("\r\n");
-//     read_ascii_response(rsp, sizeof(rsp));
-//     assert(strncmp(rsp, "END", strlen("END")) == 0);
+    send_ascii_command("\r\n");
+    char rsp[80];
+    read_ascii_response(rsp, sizeof(rsp));
+    assert(strncmp(rsp, "END", strlen("END")) == 0);
+    buffer[3]= ' ';
+    send_ascii_command(buffer);
+    usleep(250);
+    send_ascii_command("\r\n");
+    read_ascii_response(rsp, sizeof(rsp));
+    assert(strncmp(rsp, "END", strlen("END")) == 0);
 
-//     memset(buffer, ' ', sizeof(buffer));
-//     int len = snprintf(buffer + 101, sizeof(buffer) - 101, "gets foo");
-//     buffer[101 + len] = ' ';
-//     buffer[sizeof(buffer) - 1] = '\0';
-//     send_ascii_command(buffer);
-//     /* verify that the server closed the connection */
-//     assert(read(sock, buffer, sizeof(buffer)) == 0);
+    memset(buffer, ' ', sizeof(buffer));
+    int len = snprintf(buffer + 101, sizeof(buffer) - 101, "gets foo");
+    buffer[101 + len] = ' ';
+    buffer[sizeof(buffer) - 1] = '\0';
+    send_ascii_command(buffer);
+    /* verify that the server closed the connection */
+    assert(read(sock, buffer, sizeof(buffer)) == 0);
 
-//     close(sock);
-//     sock = connect_server("127.0.0.1", port, false);
+    close(sock);
+    sock = connect_server("127.0.0.1", port, false);
 
-//     return TEST_PASS;
-// }
+    return TEST_PASS;
+}
 
 static enum test_return start_memcached_server(void) {
     // server_pid = start_server(&port, false, 600);
@@ -935,7 +935,7 @@ static off_t arithmetic_command(char* buf,
 static void validate_response_header(protocol_binary_response_no_extras *response,
                                      uint8_t cmd, uint16_t status)
 {
-    // printf("magic: %d %d %d %d %d\n", response->message.header.response.magic, PROTOCOL_BINARY_RES, response->message.header.response.opcode, response->message.header.response.datatype, response->message.header.response.status);
+    // printf("magic: %d %d %d %d == %d %d 0x%x\n", response->message.header.response.magic, response->message.header.response.opcode, response->message.header.response.datatype, response->message.header.response.status, status, response->message.header.response.keylen, response->message.header.response.opaque);
     assert(response->message.header.response.magic == PROTOCOL_BINARY_RES);
     assert(response->message.header.response.opcode == cmd);
     assert(response->message.header.response.datatype == PROTOCOL_BINARY_RAW_BYTES);
@@ -1340,9 +1340,9 @@ static enum test_return test_binary_gat(void) {
     return test_binary_get_impl("test_binary_gat", PROTOCOL_BINARY_CMD_GAT);
 }
 
-// static enum test_return test_binary_gatk(void) {
-//     return test_binary_get_impl("test_binary_gatk", PROTOCOL_BINARY_CMD_GATK);
-// }
+static enum test_return test_binary_gatk(void) {
+    return test_binary_get_impl("test_binary_gatk", PROTOCOL_BINARY_CMD_GATK);
+}
 
 static enum test_return test_binary_getq_impl(const char *key, uint8_t cmd) {
     const char *missing = "test_binary_getq_missing";
@@ -1400,9 +1400,9 @@ static enum test_return test_binary_gatq(void) {
     return test_binary_getq_impl("test_binary_gatq", PROTOCOL_BINARY_CMD_GATQ);
 }
 
-// static enum test_return test_binary_gatkq(void) {
-//     return test_binary_getq_impl("test_binary_gatkq", PROTOCOL_BINARY_CMD_GATKQ);
-// }
+static enum test_return test_binary_gatkq(void) {
+    return test_binary_getq_impl("test_binary_gatkq", PROTOCOL_BINARY_CMD_GATKQ);
+}
 
 static enum test_return test_binary_incr_impl(const char* key, uint8_t cmd) {
     union {
@@ -1962,7 +1962,7 @@ struct testcase testcases[] = {
     /* The following tests all run towards the same server */
     { "start_server", start_memcached_server },
     { "issue_92", test_issue_92 },
-    // { "issue_102", test_issue_102 },
+    { "issue_102", test_issue_102 },
     { "binary_noop", test_binary_noop },
     { "binary_quit", test_binary_quit },
     { "binary_quitq", test_binary_quitq },
@@ -1980,8 +1980,8 @@ struct testcase testcases[] = {
     { "binary_getkq", test_binary_getkq },
     { "binary_gat", test_binary_gat },
     { "binary_gatq", test_binary_gatq },
-    // { "binary_gatk", test_binary_gatk },
-    // { "binary_gatkq", test_binary_gatkq },
+    { "binary_gatk", test_binary_gatk },
+    { "binary_gatkq", test_binary_gatkq },
     { "binary_incr", test_binary_incr },
     { "binary_incrq", test_binary_incrq },
     { "binary_decr", test_binary_decr },
