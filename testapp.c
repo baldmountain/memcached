@@ -580,54 +580,54 @@ static enum test_return test_issue_92(void) {
     return TEST_PASS;
 }
 
-// static enum test_return test_issue_102(void) {
-//     char buffer[4096];
-//     memset(buffer, ' ', sizeof(buffer));
-//     buffer[sizeof(buffer) - 1] = '\0';
+static enum test_return test_issue_102(void) {
+    char buffer[4096];
+    memset(buffer, ' ', sizeof(buffer));
+    buffer[sizeof(buffer) - 1] = '\0';
 
-//     close(sock);
-//     sock = connect_server("127.0.0.1", port, false);
+    close(sock);
+    sock = connect_server("127.0.0.1", port, false);
 
-//     send_ascii_command(buffer);
-//     /* verify that the server closed the connection */
-//     assert(read(sock, buffer, sizeof(buffer)) == 0);
-//     close(sock);
-//     sock = connect_server("127.0.0.1", port, false);
+    send_ascii_command(buffer);
+    /* verify that the server closed the connection */
+    assert(read(sock, buffer, sizeof(buffer)) == 0);
+    close(sock);
+    sock = connect_server("127.0.0.1", port, false);
 
-//     snprintf(buffer, sizeof(buffer), "gets ");
-//     size_t offset = 5;
-//     while (offset < 4000) {
-//         offset += snprintf(buffer + offset, sizeof(buffer) - offset,
-//                            "%010u ", (unsigned int)offset);
-//     }
+    snprintf(buffer, sizeof(buffer), "gets ");
+    size_t offset = 5;
+    while (offset < 4000) {
+        offset += snprintf(buffer + offset, sizeof(buffer) - offset,
+                           "%010u ", (unsigned int)offset);
+    }
 
-//     send_ascii_command(buffer);
-//     usleep(250);
+    send_ascii_command(buffer);
+    usleep(250);
 
-//     send_ascii_command("\r\n");
-//     char rsp[80];
-//     read_ascii_response(rsp, sizeof(rsp));
-//     assert(strncmp(rsp, "END", strlen("END")) == 0);
-//     buffer[3]= ' ';
-//     send_ascii_command(buffer);
-//     usleep(250);
-//     send_ascii_command("\r\n");
-//     read_ascii_response(rsp, sizeof(rsp));
-//     assert(strncmp(rsp, "END", strlen("END")) == 0);
+    send_ascii_command("\r\n");
+    char rsp[80];
+    read_ascii_response(rsp, sizeof(rsp));
+    assert(strncmp(rsp, "END", strlen("END")) == 0);
+    buffer[3]= ' ';
+    send_ascii_command(buffer);
+    usleep(250);
+    send_ascii_command("\r\n");
+    read_ascii_response(rsp, sizeof(rsp));
+    assert(strncmp(rsp, "END", strlen("END")) == 0);
 
-//     memset(buffer, ' ', sizeof(buffer));
-//     int len = snprintf(buffer + 101, sizeof(buffer) - 101, "gets foo");
-//     buffer[101 + len] = ' ';
-//     buffer[sizeof(buffer) - 1] = '\0';
-//     send_ascii_command(buffer);
-//     /* verify that the server closed the connection */
-//     assert(read(sock, buffer, sizeof(buffer)) == 0);
+    memset(buffer, ' ', sizeof(buffer));
+    int len = snprintf(buffer + 101, sizeof(buffer) - 101, "gets foo");
+    buffer[101 + len] = ' ';
+    buffer[sizeof(buffer) - 1] = '\0';
+    send_ascii_command(buffer);
+    /* verify that the server closed the connection */
+    assert(read(sock, buffer, sizeof(buffer)) == 0);
 
-//     close(sock);
-//     sock = connect_server("127.0.0.1", port, false);
+    close(sock);
+    sock = connect_server("127.0.0.1", port, false);
 
-//     return TEST_PASS;
-// }
+    return TEST_PASS;
+}
 
 static enum test_return start_memcached_server(void) {
     // server_pid = start_server(&port, false, 600);
@@ -1961,7 +1961,7 @@ struct testcase testcases[] = {
     /* The following tests all run towards the same server */
     { "start_server", start_memcached_server },
     { "issue_92", test_issue_92 },
-    // { "issue_102", test_issue_102 },
+    { "issue_102", test_issue_102 },
     { "binary_noop", test_binary_noop },
     { "binary_quit", test_binary_quit },
     { "binary_quitq", test_binary_quitq },
