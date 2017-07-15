@@ -44,3 +44,4 @@ doc/protocol-binary.txt
 .*.swp
 /.vscode
 /compile_commands.json
+/.vscode
