@@ -43,3 +43,4 @@ doc/protocol-binary.txt
 /memcached.spec
 .*.swp
 /.vscode
+/compile_commands.json
