@@ -16,7 +16,7 @@ my @strs = (
 );
 
 for my $str (@strs) {
-    my $server = new_memcached();
+    my $server = new_memcached("-l 127.0.0.1");
     my $sock = $server->sock;
 
     print $sock "$str\r\n";

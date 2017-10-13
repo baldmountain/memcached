@@ -6,7 +6,7 @@ use FindBin qw($Bin);
 use lib "$Bin/lib";
 use MemcachedTest;
 
-my $server = new_memcached("-R 1");
+my $server = new_memcached("-l 127.0.0.1");
 my $sock = $server->sock;
 
 print $sock "set foobar 0 0 5\r\nBubba\r\nset foobar 0 0 5\r\nBubba\r\nset foobar 0 0 5\r\nBubba\r\nset foobar 0 0 5\r\nBubba\r\nset foobar 0 0 5\r\nBubba\r\nset foobar 0 0 5\r\nBubba\r\n";

@@ -13,7 +13,7 @@ if (supports_drop_priv()) {
     exit 0;
 }
 
-my $server = new_memcached();
+my $server = new_memcached("-l 127.0.0.1");
 my $sock = $server->sock;
 
 print $sock "misbehave\r\n";

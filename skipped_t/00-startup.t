@@ -7,7 +7,7 @@ use lib "$Bin/lib";
 use MemcachedTest;
 
 eval {
-    my $server = new_memcached();
+    my $server = new_memcached("-l 127.0.0.1");
     ok($server, "started the server");
 };
 is($@, '', 'Basic startup works');

@@ -10,7 +10,7 @@ plan skip_all => 'Fix for Issue 140 was only an illusion';
 
 plan tests => 7;
 
-my $server = new_memcached();
+my $server = new_memcached("-l 127.0.0.1");
 my $sock = $server->sock;
 
 print $sock "set a 0 0 1\r\na\r\n";

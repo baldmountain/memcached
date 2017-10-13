@@ -15,7 +15,7 @@ plan skip_all => "Only possible to test #260 under artificial conditions";
 exit 0;
 plan tests => 11074;
 # assuming max slab is 1M and default mem is 64M
-my $server = new_memcached();
+my $server = new_memcached("-l 127.0.0.1");
 my $sock = $server->sock;
 
 # create a big value for the largest slab

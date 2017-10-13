@@ -7,7 +7,8 @@ use FindBin qw($Bin);
 use lib "$Bin/lib";
 use MemcachedTest;
 
-my $server = new_memcached("-o no_modern");
+my $server = new_memcached("-l 127.0.0.1");
+my $sock = $server->sock;
 ok($server, "started the server");
 
 # Based almost 100% off testClient.py which is:

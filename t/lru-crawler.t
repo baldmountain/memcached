@@ -7,7 +7,7 @@ use FindBin qw($Bin);
 use lib "$Bin/lib";
 use MemcachedTest;
 
-my $server = new_memcached('-m 32 -o no_modern');
+my $server = new_memcached("-l 127.0.0.1");
 {
     my $stats = mem_stats($server->sock, ' settings');
     is($stats->{lru_crawler}, "no");

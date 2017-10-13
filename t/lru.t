@@ -7,7 +7,7 @@ use lib "$Bin/lib";
 use MemcachedTest;
 
 # assuming max slab is 1M and default mem is 64M
-my $server = new_memcached('-o no_modern');
+my $server = new_memcached("-l 127.0.0.1");
 my $sock = $server->sock;
 
 # create a big value for the largest slab

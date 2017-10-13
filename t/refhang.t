@@ -14,7 +14,7 @@ plan skip_all => 'Test is flaky. Needs special hooks.';
 plan tests => 127;
 
 # start up a server with 10 maximum connections
-my $server = new_memcached("-m 6");
+my $server = new_memcached("-l 127.0.0.1");
 my $sock = $server->sock;
 my $hangsock = $server->new_sock;
 my $hangsock2 = $server->new_sock;

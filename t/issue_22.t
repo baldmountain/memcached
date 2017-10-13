@@ -6,7 +6,7 @@ use FindBin qw($Bin);
 use lib "$Bin/lib";
 use MemcachedTest;
 
-my $server = new_memcached("-m 3");
+my $server = new_memcached("-l 127.0.0.1");
 my $sock = $server->sock;
 my $value = "B"x66560;
 my $key = 0;

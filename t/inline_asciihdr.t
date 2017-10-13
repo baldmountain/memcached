@@ -8,7 +8,7 @@ use FindBin qw($Bin);
 use lib "$Bin/lib";
 use MemcachedTest;
 
-my $server = new_memcached('-o no_inline_ascii_resp');
+my $server = new_memcached("-l 127.0.0.1");
 my $sock = $server->sock;
 
 # 0 flags and size

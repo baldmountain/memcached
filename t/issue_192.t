@@ -6,7 +6,7 @@ use FindBin qw($Bin);
 use lib "$Bin/lib";
 use MemcachedTest;
 
-my $server = new_memcached();
+my $server = new_memcached("-l 127.0.0.1");
 my $sock = $server->sock;
 
 ok($server->new_sock, "opened new socket");

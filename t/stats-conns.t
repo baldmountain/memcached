@@ -10,7 +10,7 @@ use MemcachedTest;
 
 my $filename = "/tmp/memcachetest$$";
 
-my $server = new_memcached("-s $filename");
+my $server = new_memcached("-l 127.0.0.1");
 my $sock = $server->sock;
 my $stats_sock = $server->new_sock;
 
